@@ -1,53 +1,39 @@
-````markdown
-# 📚 StudyBuddy AI
+<h1 align="center">📚 StudyBuddy AI</h1>
+**StudyBuddy AI** is a personalized AI-powered learning companion designed for students and educators. Upload study material — PDFs, lecture slides, or textbooks — and let the app generate:
 
-**Your Personalized Learning Assistant**  
-Built with 💙 using Next.js, MongoDB, and Google Gemini API
-
----
-
-## 🚀 What is StudyBuddy AI?
-
-StudyBuddy AI is a full-stack AI SaaS platform that helps students and self-learners:
-
-- 📄 Summarize PDFs, lecture notes, or textbooks
-- 🧠 Generate multiple-choice quizzes
-- 🃏 Create flashcards for revision
-- 🧒 Get explanations like you're 5 or 🧑‍🏫 like a professor
-
-> Designed to make learning *personalized*, *fun*, and *AI-powered*.
+- ✨ **Smart Summaries**
+- ❓ **AI-Generated Quizzes**
+- 📌 **Flashcards for Revision**
+- 🧠 **Topic Explanations at Multiple Difficulty Levels**
+- 🎮 **Gamified Learning Features**
 
 ---
 
-## ✨ Features
+## 🚀 Features
 
-- 🔐 JWT Authentication with MongoDB
-- 📤 Upload and parse PDFs
-- 🤖 Gemini AI integration for summarization and content generation
-- 🧪 Auto-generated MCQs and flashcards
-- 💡 Simple explanations (ELI5 + Advanced)
-- 🎯 User-friendly UI built with Tailwind and shadcn/ui
-
----
-
-## 🧰 Tech Stack
-
-| Layer        | Stack                                    |
-|--------------|------------------------------------------|
-| Frontend     | Next.js (App Router), Tailwind, shadcn/ui |
-| Backend      | API Routes (Next.js), Mongoose, JWT      |
-| AI Engine    | Google Gemini Pro API                    |
-| Database     | MongoDB Atlas                            |
-| PDF Parsing  | pdf-parse (Node.js)                      |
-| Auth         | JWT + bcrypt                             |
-| Deployment   | Vercel (Frontend/API), MongoDB Atlas     |
+- 🧾 Upload PDFs and extract text
+- 🧠 Generate summaries with OpenAI
+- ❓ Create quizzes and flashcards
+- 🎮 Gamify your learning with streaks and leaderboards
+- 🔐 JWT-based authentication (signup, login, reset password)
+- 📦 MongoDB database for storing users & content
 
 ---
 
-## 🧑‍💻 Local Setup
+## 🛠️ Tech Stack
 
-### 1. Clone the Repository
+- **Frontend**: Next.js 14, Tailwind CSS, ShadCN/UI
+- **Backend**: Node.js, Next.js API Routes, MongoDB
+- **AI Integration**: OpenAI API
+- **Email Service**: Nodemailer + Mailtrap
+- **Authentication**: JWT + bcrypt
+- **Deployment**: Vercel (planned)
 
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Clone the Repo
 ```bash
 git clone https://github.com/your-username/studybuddy-ai.git
 cd studybuddy-ai
@@ -59,14 +45,16 @@ cd studybuddy-ai
 npm install
 ```
 
-### 3. Configure Environment Variables
+### 3. Setup Environment Variables
 
-Create a `.env.local` file:
+Create a `.env.local` file and add the following:
 
 ```env
-MONGODB_URI=your-mongodb-uri
-JWT_SECRET=your-secret
-GEMINI_API_KEY=your-gemini-api-key
+MONGO_URI=your_mongodb_uri
+TOKEN_SECRET=your_jwt_secret
+DOMAIN=http://localhost:3000
+TRANSPORT_USER=your_mailtrap_user
+TRANSPORT_PASSWORD=your_mailtrap_pass
 ```
 
 ### 4. Run the App
@@ -75,48 +63,42 @@ GEMINI_API_KEY=your-gemini-api-key
 npm run dev
 ```
 
-The app will be running on [http://localhost:3000](http://localhost:3000)
+---
+
+## 📌 To-Do Next
+
+* [ ] Implement file upload and parsing (PDF parsing)
+* [ ] Integrate OpenAI for summarization and quiz generation
+* [ ] Flashcard creation feature
+* [ ] User dashboard with history and progress
+* [ ] Gamification system (XP, badges, streaks)
 
 ---
 
-## 🔮 Gemini AI Prompts (Used Internally)
+## 💡 Inspiration
 
-* **Summary Prompt:**
-  `Summarize the following content in bullet points: <text>`
-
-* **Quiz Prompt:**
-  `Create 5 MCQs with 4 options each from: <summary>`
-
-* **Flashcards Prompt:**
-  `Create short Q&A flashcards from this content: <summary>`
-
-* **Explain Like I’m 5 / Professor:**
-  `Explain this like I'm 5: <topic>`
-  `Explain this like a professor: <topic>`
-
----
-
-## 🛠️ In Progress
-
-* [x] Auth flow (register/login)
-* [x] PDF Upload and Summary
-* [ ] Quiz Generation
-* [ ] Flashcards
-* [ ] Explanation Modes
-* [ ] Final UI polish + deployment
+Built to make studying **smarter**, not harder. StudyBuddy AI empowers learners to consume large volumes of content faster and more effectively — powered by the latest AI tech.
 
 ---
 
 ## 🤝 Contributing
 
-This project is solo-built for learning and demonstration, but feel free to fork and play around!
+Contributions are welcome and encouraged!
+
+Fork the project
+
+Create a new branch (git checkout -b feature-name)
+
+Make your changes
+
+Commit your changes (git commit -m 'Add some feature')
+
+Push to the branch (git push origin feature-name)
+
+Open a Pull Request
 
 ---
 
-## 📜 License
+## 📬 Feedback
 
-MIT License. Free to use, modify, and learn from. 💙
-
----
-
-> Made with sweat and semicolons by [Pranav](https://github.com/Pranav-789)
+Have suggestions? Want to collaborate? Open an issue or reach out!
