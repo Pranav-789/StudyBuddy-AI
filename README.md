@@ -1,9 +1,3 @@
-Here’s a clean, professional `README.md` for your **StudyBuddy AI** GitHub repository. It introduces the project, outlines features, tech stack, setup instructions, and contribution notes — all optimized for a solo dev or collaborators.
-
----
-
-### 📄 `README.md`
-
 ````markdown
 # 📚 StudyBuddy AI
 
@@ -126,7 +120,3 @@ MIT License. Free to use, modify, and learn from. 💙
 ---
 
 > Made with sweat and semicolons by [Pranav](https://github.com/Pranav-789)
-
-```
-
----
