@@ -1,7 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import bcryptjs from "bcryptjs"
-import { JsonWebTokenError } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken"
 

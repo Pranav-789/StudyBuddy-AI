@@ -29,9 +29,10 @@ const page = () => {
   }
 
   return (
-    <div>
+    <div className='flex justify-center items-center min-h-screen'>
       <Toaster position="top-center" reverseOrder={false} />
-      <h1 className="text-2xl">
+      <div>
+        <h1 className="text-2xl">
         Profile:{" "}
         {data === "nothing" ? (
           "Nothing"
@@ -45,6 +46,7 @@ const page = () => {
       <button onClick={getUserDetails} className="bg-teal-500 rounded-md p-2">
         getUserDetails
       </button>
+      </div>
     </div>
   );
 }
