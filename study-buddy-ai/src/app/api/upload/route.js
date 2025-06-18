@@ -21,37 +21,38 @@ export async function POST(request) {
         console.log("Buffer length: ", buffer.length);
         const fileName = file.name || "upload";
         const [nameWithoutExt, ext] = fileName.split(/\.(?=[^\.]+$)/);
+        const fileType = file.name.split(".").pop();
         
-        if (ext && ext.toLowerCase() === "pdf") {
-          return NextResponse.json({
-            success: true,
-            buffer: buffer.toString("base64"),
-            fileName,
-            ext,
-          });
-        }
+        // if (ext && ext.toLowerCase() === "pdf") {
+        //   return NextResponse.json({
+        //     success: true,
+        //     buffer: buffer.toString("base64"),
+        //     fileName,
+        //     ext,
+        //   });
+        // }
 
-        const uploadResult = await new Promise((resolve, reject)=>{
-            cloudinary.uploader
-              .upload_stream(
-                {
-                  resource_type: "raw",
-                  folder: "summarizerAI",
-                  public_id: `${nameWithoutExt}.${ext}`,
-                },
-                (error, result) => {
-                  if (error) reject(error);
-                  else resolve(result);
-                }
-              )
-              .end(buffer);
-        })
+        // const uploadResult = await new Promise((resolve, reject)=>{
+        //     cloudinary.uploader
+        //       .upload_stream(
+        //         {
+        //           resource_type: "raw",
+        //           folder: "summarizerAI",
+        //           public_id: `${nameWithoutExt}.${ext}`,
+        //         },
+        //         (error, result) => {
+        //           if (error) reject(error);
+        //           else resolve(result);
+        //         }
+        //       )
+        //       .end(buffer);
+        // })
         return NextResponse.json({
-            success: true,
-            url: uploadResult.secure_url,
-            public_id: uploadResult.public_id,
-            original_filename: uploadResult.original_filename,
-        })
+          success: true,
+          buffer: buffer.toString("base64"),
+          fileName,
+          fileType
+        });
     } catch (error) {
         console.error("Upload error:", error);
         return NextResponse.json(

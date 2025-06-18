@@ -24,5 +24,5 @@ const summarySchema = new Schema({
 }
 )
 
-const Summary = mongoose.model.summary || mongoose.model("summary", summarySchema);
+const Summary = mongoose.models.summary || mongoose.model("summary", summarySchema);
 export default Summary

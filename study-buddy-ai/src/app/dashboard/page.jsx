@@ -1,129 +1,103 @@
-"use client"
-import React, { useCallback, useEffect, useState } from 'react'
-import axios from 'axios';
-import toast, {Toaster} from 'react-hot-toast';
-import Markdown from 'react-markdown';
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import Markdown from "react-markdown";
 
 const page = () => {
+  const [file, setFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [summary, setSummary] = useState("");
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("");
+  const getUserDetails = async () => {
+    const res = await axios.get("/api/users/me");
+    console.log(res);
+    setUsername(res.data.data.username);
+  };
 
-    const [file, setFile] = useState(null);
-    const [isDragging, setIsDragging] = useState(false);
-    const [summary, setSummary] = useState('');
-    const [summaryLoading, setSummaryLoading] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [username, setUsername] = useState('');
-    const getUserDetails = async () => {
-      const res = await axios.get("/api/users/me");
-      console.log(res);
-      setUsername(res.data.data.username);
-    };
+  useEffect(() => {
+    getUserDetails();
+  }, []);
 
-    useEffect(()=>{
-      getUserDetails();
-    }, [])
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
-    const handleDragOver = (e)=>{
-        e.preventDefault();
-        setIsDragging(true);
+  const handleDragLeave = (e) => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile) {
+      setFile(droppedFile);
     }
+  }, []);
 
-    const handleDragLeave = (e) =>{
-        setIsDragging(false);
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!file) return;
+    setLoading(true);
+    setSummary(""); // Clear previous summary
+    setSummaryLoading(false);
+
+    try {
+      const data = new FormData();
+      data.set("file", file);
+      const response = await axios.post("/api/upload", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const { fileName, fileType } = response.data;
+
+      if (response.data.success) {
+        toast.success("File read successfully!");
+        setFile(null);
+        setLoading(false);
+        setSummaryLoading(true);
+
+        try {
+          const summaryResponse = await axios.post(
+            "/api/summarize",
+            {
+              fileBuffer: response.data.buffer,
+              fileName: fileName,
+              fileType: fileType,
+            },
+            { withCredentials: true }
+          );
+
+          setSummaryLoading(false);
+          if (summaryResponse.data.success) {
+            setSummary(summaryResponse.data.summary);
+            toast.success("Summary generated successfully!");
+          } else {
+            setSummary("Failed to generate summary.");
+            toast.error("Failed to generate summary.");
+          }
+        } catch (error) {
+          setSummaryLoading(false);
+          setSummary("Error generating summary.");
+          toast.error("Error generating summary");
+        }
+      }
+    } catch (error) {
+      toast.error("Error uploading file");
+      console.error("Upload error:", error);
     }
-
-    const handleDrop = useCallback((e) => {
-      e.preventDefault();
-      setIsDragging(false);
-      const droppedFile = e.dataTransfer.files?.[0];
-      if (droppedFile) {
-        setFile(droppedFile);
-      }
-    }, []);
-
-    const onSubmit = async (e) => {
-      e.preventDefault();
-      if (!file) return;
-      setLoading(true);
-      setSummary(""); // Clear previous summary
-      setSummaryLoading(false);
-
-      try {
-        const data = new FormData();
-        data.set("file", file);
-        const response = await axios.post("/api/upload", data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        const { url, original_filename } = response.data;
-        const fileType = file.name.split(".").pop();
-
-        if(fileType === 'pdf'){
-          if(response.data.buffer){
-            toast.success("File read successfully!");
-            setLoading(false);
-            setSummaryLoading(true);
-            
-            try {
-              const summaryResponse = await axios.post("/api/summarizepdf", {
-                fileBuffer: response.data.buffer
-              }, {withCredentials: true});
-              setFile(null);
-              setSummaryLoading(false);
-              if (summaryResponse.data.success) {
-                setSummary(summaryResponse.data.summary);
-                toast.success("Summary generated successfully!");
-              } else {
-                setSummary("Failed to generate summary.");
-                toast.error("Failed to generate summary.");
-              }
-            } catch (error) {
-              setSummaryLoading(false);
-              setSummary("Error generating summary.");
-              toast.error("Error generating summary");
-            }
-          }
-        }
-        else{
-          if (response.data.success) {
-            toast.success("File uploaded successfully!");
-            setFile(null);
-            setLoading(false);
-            setSummaryLoading(true); // Start loading summary
-
-            try {
-              const summaryResponse = await axios.post("/api/summarize", {
-                fileUrl: response.data.url,
-                fileName: original_filename,
-                fileType: fileType,
-              }, {withCredentials: true});
-              setSummaryLoading(false);
-
-              if (summaryResponse.data.success) {
-                setSummary(summaryResponse.data.summary);
-                toast.success("Summary generated successfully!");
-              } else {
-                setSummary("Failed to generate summary.");
-                toast.error("Failed to generate summary.");
-              }
-            } catch (error) {
-              setSummaryLoading(false);
-              setSummary("Error generating summary.");
-              toast.error("Error generating summary");
-            }
-          }
-        }
-      } catch (error) {
-        toast.error("Error uploading file");
-        console.error("Upload error:", error);
-      }
-    };
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen flex-col w-full">
       <Toaster position="top-center" reverseOrder={false} />
-      <h1 className='text-2xl mb-6 font-semibold'>Welcome Back {username}</h1>
+      <h1 className="text-2xl mb-6 font-semibold">Welcome Back {username}</h1>
       <div className="w-full flex justify-center items-center flex-col gap-6">
         <form
           className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 min-w-[350px] w-[60%] border-2 border-gray-500"
@@ -183,6 +157,6 @@ const page = () => {
       </div>
     </div>
   );
-}
+};
 
-export default page
+export default page;

@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import { summarizeText } from "@/lib/gemini";
 import { extractTextFromBuffer } from "@/lib/extractTextFromBuffer";
+import { getDataFromPDF } from "@/helpers/getdataformpdf";
 import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken'
 import Summary from "@/models/summaryModel";
 
 export async function POST(req) {
   try {
-    const { fileUrl, fileName, fileType } = await req.json();
+    const { fileBuffer, fileName, fileType } = await req.json();
 
     const cookieStore = cookies();
     const token = (await cookieStore).get("token")?.value;
@@ -19,15 +20,19 @@ export async function POST(req) {
     console.log("email: ", decodedToken.email);
 
     console.log("Incoming Summarize Request:");
-    console.log("fileUrl:", fileUrl);
     console.log("fileName:", fileName);
     console.log("fileType:", fileType);
 
-    const fileRes = await axios.get(fileUrl, { responseType: "arraybuffer" });
-    const fileBuffer = Buffer.from(fileRes.data);
-    console.log("Downloaded buffer length:", fileBuffer.length);
+    const buffer = Buffer.from(fileBuffer, "base64");
 
-    const text = await extractTextFromBuffer(fileBuffer, fileType);
+    let text;
+    if(fileType === 'pdf'){
+      text = await getDataFromPDF(buffer);
+    }
+    else{
+      text = await extractTextFromBuffer(buffer, fileType);
+    }
+
     const summary = await summarizeText(text);
     console.log(summary);
 
