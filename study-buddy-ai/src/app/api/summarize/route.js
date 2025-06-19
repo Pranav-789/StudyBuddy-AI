@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { summarizeText } from "@/lib/gemini";
 import { extractTextFromBuffer } from "@/lib/extractTextFromBuffer";
-import { getDataFromPDF } from "@/helpers/getdataformpdf";
+// import { getDataFromPDF } from "@/helpers/getdataformpdf";
 import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken'
 import Summary from "@/models/summaryModel";
@@ -25,12 +25,13 @@ export async function POST(req) {
     const buffer = Buffer.from(fileBuffer, "base64");
 
     let text;
-    if(fileType === 'pdf'){
-      text = await getDataFromPDF(buffer);
-    }
-    else{
-      text = await extractTextFromBuffer(buffer, fileType);
-    }
+    // if(fileType === 'pdf'){
+    //   text = await getDataFromPDF(buffer);
+    // }
+    // else{
+    //   text = await extractTextFromBuffer(buffer, fileType);
+    // }
+    text = await extractTextFromBuffer(buffer, fileType);
 
     const summary = await summarizeText(text);
     console.log(summary);

@@ -13,10 +13,6 @@ export async function extractTextFromBuffer(buffer, fileType) {
     case "pptx":
       return extractTextFromPPTX(buffer);
 
-    // case "pdf":
-    //   const pdfres = await extractTextfromPdf(buffer);
-    //   return pdfres;
-
     default:
       throw new Error(`Unsupported file type: ${fileType}`);
   }
