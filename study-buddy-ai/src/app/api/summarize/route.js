@@ -5,6 +5,8 @@ import { extractTextFromBuffer } from "@/lib/extractTextFromBuffer";
 import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken'
 import Summary from "@/models/summaryModel";
+import { connect } from "@/dbConfig/dbConfig";
+connect();
 
 export async function POST(req) {
   try {
