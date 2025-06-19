@@ -26,3 +26,11 @@ export async function summarizeText(text) {
   });
   return response.text;
 }
+
+export async function refineSummary(text, prompt){
+  const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash-001",
+    contents: `I am providing you the summary, ${prompt}. summary:\n\n${text}`,
+  });
+  return response.text;
+}

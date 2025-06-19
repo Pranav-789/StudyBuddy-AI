@@ -3,9 +3,12 @@ import {motion} from 'motion/react'
 import { AnimatePresence } from 'motion/react';
 import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
+  const router = useRouter();
     const [hidden, setHidden] = useState(false);
+    const [logoutdiv, setLogoutDiv] = useState(false);
     const [summaryArray, setSummaryArray] = useState([]);
 
     const toggleSidebar = () =>{
@@ -25,7 +28,15 @@ const Navbar = () => {
     useEffect(() => {
       console.log("Updated summaryArray:", summaryArray);
     }, [summaryArray]);
-      
+    
+    const logout = async () => {
+      try {
+        await axios.get("/api/users/logout");
+        router.push("/login");
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
 
   return (
@@ -37,13 +48,55 @@ const Navbar = () => {
         >
           lll
         </button>
-        <h1 className="font-semibold">SummarizerAi</h1>
+        <Link href={"/dashboard"} className="font-semibold">
+          SummarizerAI
+        </Link>
       </div>
       <div className="flex gap-4 justify-center items-center">
-        <Link href={'/dashboard'} className="font-semibold">Summarizer</Link>
-        <Link href={'/profile'} className="font-semibold">Profile</Link>
-        <button className="text-lg bg-gray-300 hover:bg-gray-400 p-1 rounded-md">{`[->`}</button>
+        <Link href={"/profile"} className="font-semibold">
+          Profile
+        </Link>
+        <button
+          className="text-lg bg-gray-300 hover:bg-gray-400 p-1 rounded-md"
+          onClick={() => setLogoutDiv((prev) => !prev)}
+        >{`[->`}</button>
       </div>
+
+      <AnimatePresence>
+        {logoutdiv && (
+          <motion.div
+            className="absolute top-0 right-0 bg-gray-400 rounded-md flex p-4 gap-2"
+            initial={{
+              scale: 0,
+              opacity: 0,
+            }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+            }}
+            exit={{
+              scale: 0,
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            <button
+              className="bg-indigo-600 text-white rounded p-2"
+              onClick={logout}
+            >
+              LogOut
+            </button>
+            <button
+              className="p-1 h-[40px] w-[40px] bg-gray-600 text-white rounded"
+              onClick={() => setLogoutDiv((prev) => !prev)}
+            >
+              X
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {hidden && (
@@ -64,28 +117,33 @@ const Navbar = () => {
               duration: 0.3,
             }}
           >
-            <div className='flex justify-between items-center mt-1 p-2 border-b-1 border-black'>
-              <h1 className='text-lg font-semibold'>History</h1>
+            <div className="flex justify-between items-center mt-1 p-2 border-b-1 border-black">
+              <h1 className="text-lg font-semibold">History</h1>
               <button
-                className="text-lg bg-gray-300 hover:bg-gray-400 h-6 w-6 rounded-md"
+                className="text-lg bg-gray-300 hover:bg-gray-400 h-[30px] w-[30px] rounded-md"
                 onClick={toggleSidebar}
               >
                 X
               </button>
             </div>
-            {
-                summaryArray.length > 0 &&
-                summaryArray.map((summary, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="p-2 w-full bg-white rounded-md mt-2 hover:bg-white/50"
-                    >
-                      <Link href={`/summary/${summary._id}`}>{summary.title}</Link>
-                    </div>
-                  );
-                })
-            }
+            <div
+              className="p-2 w-full bg-black text-white rounded-md mt-2 hover:bg-black/50"
+            >
+              <Link href={`/dashboard`}>New Summary</Link>
+            </div>
+            {summaryArray.length > 0 &&
+              summaryArray.map((summary, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="p-2 w-full bg-white rounded-md mt-2 hover:bg-white/50"
+                  >
+                    <Link href={`/summary/${summary._id}`}>
+                      {summary.title}
+                    </Link>
+                  </div>
+                );
+              })}
           </motion.div>
         )}
       </AnimatePresence>

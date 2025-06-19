@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
 import { summarizeText } from "@/lib/gemini";
 import { extractTextFromBuffer } from "@/lib/extractTextFromBuffer";
 import { getDataFromPDF } from "@/helpers/getdataformpdf";
