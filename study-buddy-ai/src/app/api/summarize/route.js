@@ -27,8 +27,22 @@ export async function POST(req) {
     const buffer = Buffer.from(fileBuffer, "base64");
 
     let text;
+    if (fileType === "pdf") {
+      const response = await fetch(
+        "https://pdfbuffer2text-api.onrender.com/convert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/pdf",
+          },
+          body: buffer, // send raw binary buffer
+        }
+      );
+      const data = await response.json();
+      text = data.text;
+    } else {
       text = await extractTextFromBuffer(buffer, fileType);
-    // text = await extractTextFromBuffer(buffer, fileType);
+    }
 
     const summary = await summarizeText(text);
     console.log(summary);
