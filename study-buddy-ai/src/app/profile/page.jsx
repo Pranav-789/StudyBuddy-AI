@@ -5,6 +5,7 @@ import axios from 'axios'
 import Link from 'next/link'
 import toast, { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import Navbar from '@/components/Navbar'
 
 const page = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const page = () => {
 
   return (
     <div className='flex justify-center items-center min-h-screen'>
+      <Navbar/>
       <Toaster position="top-center" reverseOrder={false} />
       <div>
         <h1 className="text-2xl">

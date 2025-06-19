@@ -3,8 +3,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import Markdown from "react-markdown";
+import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
 
 const page = () => {
+  const router = useRouter();
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [summary, setSummary] = useState("");
@@ -77,6 +80,8 @@ const page = () => {
           setSummaryLoading(false);
           if (summaryResponse.data.success) {
             setSummary(summaryResponse.data.summary);
+            const summaryId = summaryResponse.data.id;
+            router.push(`/summary/${summaryId}`);
             toast.success("Summary generated successfully!");
           } else {
             setSummary("Failed to generate summary.");
@@ -96,6 +101,7 @@ const page = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen flex-col w-full">
+      <Navbar/>
       <Toaster position="top-center" reverseOrder={false} />
       <h1 className="text-2xl mb-6 font-semibold">Welcome Back {username}</h1>
       <div className="w-full flex justify-center items-center flex-col gap-6">

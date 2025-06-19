@@ -46,7 +46,7 @@ export async function POST(req) {
     const savedSummary = await summaryOnDB.save();
     console.log(savedSummary)
 
-    return NextResponse.json({ success: true, summary });
+    return NextResponse.json({ success: true, summary, id: summaryOnDB._id });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

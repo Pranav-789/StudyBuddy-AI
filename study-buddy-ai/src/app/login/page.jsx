@@ -33,7 +33,7 @@ const page = () => {
       const response = await axios.post("/api/users/login", user);
       console.log("Login Success", response.data);
       toast.success("Login success");
-      router.push(`/profile/${user.email}`)
+      router.push(`/dashboard`)
     } catch (error) {
       console.log("Login failed", error.message);
       toast.error(error.message);
