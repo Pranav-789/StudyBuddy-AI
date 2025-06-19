@@ -174,7 +174,7 @@ const page = () => {
                 }))
               }
             />
-            <label htmlFor="use bullet points">Use Bullet Points</label>
+            <label htmlFor="use bullet points">Use Emojis</label>
           </div>
         </div>
         <button

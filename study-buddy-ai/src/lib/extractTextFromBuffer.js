@@ -1,5 +1,12 @@
 import mammoth from "mammoth";
 import AdmZip from "adm-zip";
+import ExcelJS from "exceljs";
+import pdf from 'pdf-parse'
+
+async function getDataFromPDF(bufferdata) {
+  const text = (await pdf(bufferdata)).text;
+  return text;
+}
 
 export async function extractTextFromBuffer(buffer, fileType) {
   switch (fileType) {
@@ -12,6 +19,12 @@ export async function extractTextFromBuffer(buffer, fileType) {
 
     case "pptx":
       return extractTextFromPPTX(buffer);
+
+    case "xlsx":
+      return extractTextFromXLSX(buffer);
+    
+    case "pdf":
+      return getDataFromPDF(buffer);
 
     default:
       throw new Error(`Unsupported file type: ${fileType}`);
@@ -39,6 +52,21 @@ function extractTextFromPPTX(buffer) {
         extractedText += cleaned + " ";
       });
     }
+  });
+
+  return extractedText.trim();
+}
+
+async function extractTextFromXLSX(buffer) {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buffer);
+
+  let extractedText = "";
+
+  workbook.eachSheet((sheet) => {
+    sheet.eachRow((row) => {
+      extractedText += row.values.slice(1).join(" ") + "\n"; // skip first element (ExcelJS 1-based)
+    });
   });
 
   return extractedText.trim();
