@@ -1,6 +1,7 @@
 import mammoth from "mammoth";
 import AdmZip from "adm-zip";
 import ExcelJS from "exceljs";
+import { getDataFromPDF } from "@/helpers/getdataformpdf";
 
 export async function extractTextFromBuffer(buffer, fileType) {
   switch (fileType) {
@@ -16,6 +17,9 @@ export async function extractTextFromBuffer(buffer, fileType) {
 
     case "xlsx":
       return extractTextFromXLSX(buffer);
+    
+    case "pdf":
+      return getDataFromPDF(buffer);
       
     default:
       throw new Error(`Unsupported file type: ${fileType}`);
