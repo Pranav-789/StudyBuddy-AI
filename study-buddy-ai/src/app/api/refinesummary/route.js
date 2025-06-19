@@ -1,6 +1,8 @@
 import Summary from "@/models/summaryModel";
 import { NextResponse } from "next/server";
 import { refineSummary } from "@/lib/gemini";
+import { connect } from "@/dbConfig/dbConfig";
+connect()
 
 export async function POST(req){
     try {

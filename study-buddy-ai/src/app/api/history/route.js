@@ -1,8 +1,9 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import User from "@/models/userModel";
 import Summary from "@/models/summaryModel";
 import { NextResponse } from "next/server";
+import {connect} from "@/dbConfig/dbConfig"
+connect();
 
 export async function GET(){
     const cookieStore = cookies();

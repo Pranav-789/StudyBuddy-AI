@@ -1,5 +1,7 @@
 import Summary from "@/models/summaryModel";
 import { NextResponse } from "next/server";
+import {connect} from "@/dbConfig/dbConfig"
+connect();
 
 export async function GET(request){
     try {
