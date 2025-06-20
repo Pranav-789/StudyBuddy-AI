@@ -7,9 +7,11 @@ import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import toast, { Toaster } from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const router = useRouter();
+  const pathname = usePathname();
     const [hidden, setHidden] = useState(false);
     const [logoutdiv, setLogoutDiv] = useState(false);
     const [summaryArray, setSummaryArray] = useState([]);
@@ -50,6 +52,9 @@ const Navbar = () => {
         if(response.data.success){
           toast.success(response.data.message)
           setSummaryArray(prev => prev.filter(s=> s._id !==id));
+          if(pathname === `/summary/${id}`){
+            router.push("/dashboard");
+          }
         }
         else{
           toast.error(response.data.error)
