@@ -4,6 +4,9 @@ import { AnimatePresence } from 'motion/react';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import toast, { Toaster } from "react-hot-toast";
 
 const Navbar = () => {
   const router = useRouter();
@@ -38,9 +41,29 @@ const Navbar = () => {
       }
     };
 
+    const handleDelete = async(id) =>{
+      try {
+        toast.success("Delete request sent")
+        const response = await axios.delete(`/api/summarize`, {
+          data: {summaryId: id},
+        });
+        if(response.data.success){
+          toast.success(response.data.message)
+          setSummaryArray(prev => prev.filter(s=> s._id !==id));
+        }
+        else{
+          toast.error(response.data.error)
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.error || "Failed deletion of summary!"
+        );
+      }
+    }
 
   return (
     <div className="fixed top-0 bg-gray-200 border-b-1 border-black/30 flex justify-between p-3 w-full">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="flex gap-6 justify-center items-center">
         <button
           className="ml-2 rotate-90 text-2xl bg-gray-300 hover:bg-gray-400 p-1 rounded-md"
@@ -101,7 +124,7 @@ const Navbar = () => {
       <AnimatePresence>
         {hidden && (
           <motion.div
-            className="absolute min-h-[100vh] bg-gray-400 w-[250px] top-0 left-0 rounded-r-md p-2 flex-col"
+            className="absolute h-[100vh] bg-gray-400 w-[250px] top-0 left-0 rounded-r-md p-2 flex-col overflow-y-auto"
             initial={{
               scale: 1,
               x: "-250px",
@@ -136,11 +159,20 @@ const Navbar = () => {
                 return (
                   <div
                     key={index}
-                    className="p-2 w-full bg-white rounded-md mt-2 hover:bg-white/50"
+                    className="p-2 w-full bg-white rounded-md mt-2 hover:bg-white/50 flex justify-between"
                   >
-                    <Link href={`/summary/${summary._id}`}>
+                    <Link
+                      href={`/summary/${summary._id}`}
+                      className="break-words whitespace-normal max-w-[180px]"
+                    >
                       {summary.title}
                     </Link>
+                    <button onClick={()=>handleDelete(summary._id)}>
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className="hover:text-red-500"
+                      />
+                    </button>
                   </div>
                 );
               })}

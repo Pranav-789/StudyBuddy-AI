@@ -160,6 +160,7 @@ const page = () => {
             <Markdown>{summary}</Markdown>
           </div>
         )}
+        <div className="text-center p-2">Sometimes pdf file take longer than expected, if summary is not generated please try again in 30 seconds</div>
       </div>
     </div>
   );

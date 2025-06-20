@@ -66,3 +66,24 @@ export async function POST(req) {
     );
   }
 }
+
+
+export async function DELETE(req) {
+  try {
+    const {summaryId} = await req.json();
+    if(!summaryId){
+      return NextResponse.json({success: false, error: "No summary Id sent!"});
+    }
+
+    const summaryInDB = await Summary.findByIdAndDelete(summaryId);
+    if (!summaryInDB) {
+      return NextResponse.json(
+        { success: false, error: "Summary not found!" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json({success: true, message: "Summary deleted successfully"});
+  } catch (error) {
+    return NextResponse.json({success: false, error: "Internal server error"});
+  }
+}
