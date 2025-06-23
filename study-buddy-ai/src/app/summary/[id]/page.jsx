@@ -19,6 +19,8 @@ const page = () => {
       "use bullet points": false,
       "use emojis": false,
     })
+
+    const [customPrompt, setCustomPrompt] = useState("");
     const params = useParams();
     useEffect(() => {
       const loadSummary = async () => {
@@ -47,7 +49,7 @@ const page = () => {
         promptExtension = "refine the summary";
       }
       else{
-        promptExtension += selected.join(", ") + ".";
+        promptExtension += selected.join(", ") + customPrompt + " " + ".";
       }
       console.log(promptExtension);
 
@@ -176,6 +178,16 @@ const page = () => {
             />
             <label htmlFor="use bullet points">Use Emojis</label>
           </div>
+        </div>
+        <div className="flex justify-center items-center gap-2 mb-2 text-lg bg-gray-400 p-2 rounded-md">
+          <label htmlFor="customPrompt">Customize</label>
+          <input
+            type="text"
+            name="customPrompt"
+            className='w-full bg-white rounded-md p-[4px] text-black'
+            value={customPrompt}
+            onChange={(e) => setCustomPrompt(e.target.value)}
+          />
         </div>
         <button
           className="rounded-md bg-indigo-600 p-2 text-white text-lg"
