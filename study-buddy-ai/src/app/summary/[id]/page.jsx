@@ -185,6 +185,7 @@ const page = () => {
             type="text"
             name="customPrompt"
             className='w-full bg-white rounded-md p-[4px] text-black'
+            placeholder='Enter custom prompt here'
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
           />
