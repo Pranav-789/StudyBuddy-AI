@@ -10,6 +10,7 @@ const page = () => {
   const router = useRouter();
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [uploading, setUploading] = useState(false)
   const [summary, setSummary] = useState("");
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,6 +49,7 @@ const page = () => {
     setLoading(true);
     setSummary(""); // Clear previous summary
     setSummaryLoading(false);
+    setUploading(true);
 
     try {
       const data = new FormData();
@@ -65,6 +67,7 @@ const page = () => {
         setFile(null);
         setLoading(false);
         setSummaryLoading(true);
+        setUploading(false)
 
         try {
           const summaryResponse = await axios.post(
@@ -93,6 +96,7 @@ const page = () => {
           toast.error("Error generating summary");
         }
       }
+      setUploading(false)
     } catch (error) {
       toast.error("Error uploading file");
       console.error("Upload error:", error);
@@ -101,66 +105,77 @@ const page = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen flex-col w-full">
-      <Navbar/>
+      <Navbar />
       <Toaster position="top-center" reverseOrder={false} />
       <h1 className="text-2xl mb-6 font-semibold">Welcome Back {username}</h1>
       <div className="w-full flex justify-center items-center flex-col gap-6">
-        <form
-          className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 min-w-[350px] w-[60%] border-2 border-gray-500"
-          onSubmit={onSubmit}
-        >
-          <h1 className="text-center text-xl font-semibold mb-4">
-            {loading ? "Processing" : "Upload Your Files Here"}
-          </h1>
-          <div
-            className={`flex flex-col items-center justify-center p-2 border-2 border-dashed rounded-lg h-40 mb-4 transition ${
-              isDragging ? "border-indigo-500 bg-indigo-50" : "border-gray-300"
-            }`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
+        {!uploading && !summaryLoading ? (
+          <form
+            className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 min-w-[350px] w-[60%] border-2 border-gray-500"
+            onSubmit={onSubmit}
           >
-            {file ? (
-              <p className="text-gray-700 m-2">{file.name}</p>
-            ) : (
-              <p className="text-gray-500 m-2">
-                Drag & drop your file here or click below
+            <h1 className="text-center text-xl font-semibold mb-4">
+              {loading ? "Processing" : "Upload Your Files Here"}
+            </h1>
+            <div
+              className={`flex flex-col items-center justify-center p-2 border-2 border-dashed rounded-lg h-40 mb-4 transition ${
+                isDragging
+                  ? "border-indigo-500 bg-indigo-50"
+                  : "border-gray-300"
+              }`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+            >
+              {file ? (
+                <p className="text-gray-700 m-2">{file.name}</p>
+              ) : (
+                <p className="text-gray-500 m-2">
+                  Drag & drop your file here or click below
+                </p>
+              )}
+              {!file && (
+                <input
+                  type="file"
+                  name="file"
+                  id="file"
+                  onChange={(e) => setFile(e.target.files?.[0])}
+                  className="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 cursor-pointer bg-gray-50 max-w-[320px]"
+                />
+              )}
+            </div>
+            {file && (
+              <p className="mb-2">
+                Drag and drop new file to replace above one!
               </p>
             )}
-            {!file && (
-              <input
-                type="file"
-                name="file"
-                id="file"
-                onChange={(e) => setFile(e.target.files?.[0])}
-                className="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 cursor-pointer bg-gray-50 max-w-[320px]"
-              />
-            )}
-          </div>
-          {file && (
-            <p className="mb-2">Drag and drop new file to replace above one!</p>
-          )}
-          <button
-            type="submit"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg w-full transition"
-            disabled={!file}
-          >
-            Upload
-          </button>
-        </form>
-
-        {summaryLoading && (
-          <div className="mt-4 text-indigo-600 font-semibold">
+            <button
+              type="submit"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg w-full transition"
+              disabled={!file}
+            >
+              Upload
+            </button>
+          </form>
+        ) : summaryLoading ? (
+          <p className="text-blue-600 font-semibold text-3xl my-2">
             Generating summary...
-          </div>
-        )}
+          </p>
+        ) : uploading ? (
+          <p className="animate-blink text-green-500 font-semibold text-3xl my-2">
+            File is uploading...
+          </p>
+        ) : null}
         {summary && !summaryLoading && (
           <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow min-w-[350px] w-[60%]">
             <h2 className="font-bold mb-2">Summary:</h2>
             <Markdown>{summary}</Markdown>
           </div>
         )}
-        <div className="text-center p-2">Sometimes pdf file take longer than expected, if summary is not generated please try again in 30 seconds</div>
+        <div className="text-center p-2">
+          Sometimes pdf file take longer than expected, if summary is not
+          generated please try again in 30 seconds
+        </div>
       </div>
     </div>
   );

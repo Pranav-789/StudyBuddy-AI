@@ -22,7 +22,19 @@ export async function summarizeText(text) {
   console.log(text);
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash-001",
-    contents: `Can you provide a comprehensive summary of the given text? The summary should cover all the key points and main ideas presented in the original text, while also condensing the information into a concise and easy-to-understand format. Please ensure that the summary includes relevant details and examples that support the main ideas, while avoiding any unnecessary information or repetition. The length of the summary should be appropriate for the length and complexity of the original text, providing a clear and accurate overview without omitting any important information. text:\n\n${text}. \n also give spaces/newline between paragraphs for better readibility.`,
+    contents: `
+Please provide a comprehensive **Markdown-formatted summary**(not markdown code, but markdown format) of the following text. The summary should:
+
+- Cover all key points and main ideas
+- Be concise and easy to understand
+- Use **headings**, **bullet points**, and **paragraphs** where appropriate
+- Add extra newlines for readability
+- Avoid unnecessary repetition
+
+Text to summarize:
+
+${text}
+    `,
   });
   return response.text;
 }
@@ -30,7 +42,34 @@ export async function summarizeText(text) {
 export async function refineSummary(text, prompt){
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash-001",
-    contents: `I am providing you the summary, ${prompt}. summary:\n\n${text}. also give extra newlines between paragraphs for better readibility`,
+    contents: `
+You are given a summary in Markdown format. Please **refine it** according to the following instruction:
+
+**Instruction:** ${prompt}
+
+**Guidelines:**
+- If the instruction asks for a **table**, include a **Markdown-formatted table** using pipes (|), headers, and alignment (e.g., | Column 1 | Column 2 |).
+- If the instruction asks for a **chart**, provide a **text-based chart** like an ASCII bar chart or a list-based format — avoid saying "visual not supported".
+- Do not return Markdown code blocks — return **actual Markdown-formatted output**, not wrapped in \`\`\`markdown.
+- Ensure headings (**#**, **##**), bullet points (**-**) and spacing are clean.
+- Do not repeat the original summary.
+- Focus on clarity, structure, and formatting improvements.
+
+---
+
+Make sure to:
+- Keep the Markdown formatting consistent
+- Preserve the key information unless asked to shorten
+- Improve clarity, readability, and structure as needed
+- Add or modify bullet points, headings, or paragraphs if it improves comprehension
+- Avoid duplicating content
+
+---
+
+**Summary to Refine:**
+
+${text}
+    `,
   });
   return response.text;
 }

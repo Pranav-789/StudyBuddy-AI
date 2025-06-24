@@ -17,36 +17,15 @@ export async function POST(request) {
         }
 
         const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        const buffer = Buffer.from(bytes).toString('base64')
         console.log("Buffer length: ", buffer.length);
         const fileName = file.name || "upload";
         const [nameWithoutExt, ext] = fileName.split(/\.(?=[^\.]+$)/);
         const fileType = file.name.split(".").pop();
-        
-        // if (ext && ext.toLowerCase() === "pdf") {
-        //   return NextResponse.json({
-        //     success: true,
-        //     buffer: buffer.toString("base64"),
-        //     fileName,
-        //     ext,
-        //   });
-        // }
 
-        // const uploadResult = await new Promise((resolve, reject)=>{
-        //     cloudinary.uploader
-        //       .upload_stream(
-        //         {
-        //           resource_type: "raw",
-        //           folder: "summarizerAI",
-        //           public_id: `${nameWithoutExt}.${ext}`,
-        //         },
-        //         (error, result) => {
-        //           if (error) reject(error);
-        //           else resolve(result);
-        //         }
-        //       )
-        //       .end(buffer);
-        // })
+        // const res = await fetch('')
+        
+        
         return NextResponse.json({
           success: true,
           buffer: buffer.toString("base64"),

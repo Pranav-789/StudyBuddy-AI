@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import toast, { Toaster } from "react-hot-toast";
 import { usePathname } from "next/navigation";
+import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
   const router = useRouter();
@@ -85,15 +86,17 @@ const Navbar = () => {
           Profile
         </Link>
         <button
-          className="text-lg bg-gray-300 hover:bg-gray-400 p-1 rounded-md"
+          className="text-lg bg-gray-300 hover:bg-gray-400 p-1 h-[35px] w-[35px] rounded-md"
           onClick={() => setLogoutDiv((prev) => !prev)}
-        >{`[->`}</button>
+        >
+          <FontAwesomeIcon icon={faSignOut} />
+        </button>
       </div>
 
       <AnimatePresence>
         {logoutdiv && (
           <motion.div
-            className="absolute top-0 right-0 bg-gray-400 rounded-md flex p-4 gap-2"
+            className="absolute top-2 right-2 bg-gray-400 rounded-md flex p-4 gap-2"
             initial={{
               scale: 0,
               opacity: 0,
@@ -110,78 +113,90 @@ const Navbar = () => {
               duration: 0.3,
             }}
           >
-            <button
-              className="bg-indigo-600 text-white rounded p-2"
-              onClick={logout}
-            >
-              LogOut
-            </button>
-            <button
-              className="p-1 h-[40px] w-[40px] bg-gray-600 text-white rounded"
-              onClick={() => setLogoutDiv((prev) => !prev)}
-            >
-              X
-            </button>
+            <div className="flex flex-col">
+              <p className='text-lg wrap-break-word mb-2'>Are you sure you want to logOut?</p>
+              <div className='w-full flex justify-center gap-2'>
+                <button
+                  className="bg-indigo-600 text-white rounded p-2"
+                  onClick={logout}
+                >
+                  LogOut
+                </button>
+                <button
+                  className="p-1 h-[40px] w-[40px] bg-gray-600 text-white rounded"
+                  onClick={() => setLogoutDiv((prev) => !prev)}
+                >
+                  X
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
         {hidden && (
-          <motion.div
-            className="absolute h-[100vh] bg-gray-400 w-[250px] top-0 left-0 rounded-r-md p-2 flex-col overflow-y-auto"
-            initial={{
-              scale: 1,
-              x: "-250px",
-            }}
-            animate={{
-              scale: 1,
-              x: "0px",
-            }}
-            exit={{
-              x: "-250px",
-            }}
-            transition={{
-              duration: 0.3,
-            }}
-          >
-            <div className="flex justify-between items-center mt-1 p-2 border-b-1 border-black">
-              <h1 className="text-lg font-semibold">History</h1>
-              <button
-                className="text-lg bg-gray-300 hover:bg-gray-400 h-[30px] w-[30px] rounded-md"
-                onClick={toggleSidebar}
-              >
-                X
-              </button>
-            </div>
+          <>
             <div
-              className="p-2 w-full bg-black text-white rounded-md mt-2 hover:bg-black/50"
+              className="left-[250px] fixed inset-0 z-40"
+              onClick={() => setHidden(false)}
+            />
+            <motion.div
+              className="absolute h-[100vh] bg-gray-400 w-[250px] top-0 left-0 rounded-r-md p-2 flex-col overflow-y-auto"
+              initial={{
+                scale: 1,
+                x: "-250px",
+              }}
+              animate={{
+                scale: 1,
+                x: "0px",
+              }}
+              exit={{
+                x: "-250px",
+              }}
+              transition={{
+                duration: 0.3,
+              }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <Link href={`/dashboard`}>New Summary</Link>
-            </div>
-            {summaryArray.length > 0 &&
-              summaryArray.map((summary, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="p-2 w-full bg-white rounded-md mt-2 hover:bg-white/50 flex justify-between"
-                  >
-                    <Link
-                      href={`/summary/${summary._id}`}
-                      className="break-words whitespace-normal max-w-[180px]"
+              <div className="flex justify-between items-center mt-1 p-2 border-b-1 border-black">
+                <h1 className="text-lg font-semibold">History</h1>
+                <button
+                  className="text-lg bg-gray-300 hover:bg-gray-400 h-[30px] w-[30px] rounded-md"
+                  onClick={toggleSidebar}
+                >
+                  X
+                </button>
+              </div>
+              <div className="p-2 w-full bg-black text-white rounded-md mt-2 hover:bg-black/50">
+                <Link href={`/dashboard`} className="block w-full h-full">
+                  New Summary
+                </Link>
+              </div>
+              {summaryArray.length > 0 &&
+                summaryArray.map((summary, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="p-2 w-full bg-white rounded-md mt-2 hover:bg-white/50 flex justify-between"
                     >
-                      {summary.title}
-                    </Link>
-                    <button onClick={()=>handleDelete(summary._id)}>
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className="hover:text-red-500"
-                      />
-                    </button>
-                  </div>
-                );
-              })}
-          </motion.div>
+                      <Link
+                        href={`/summary/${summary._id}`}
+                        className="break-words whitespace-normal max-w-[180px] block w-full h-full"
+                      >
+                        {summary.title}
+                      </Link>
+                      <button onClick={() => handleDelete(summary._id)}>
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className="hover:text-red-500"
+                        />
+                      </button>
+                    </div>
+                  );
+                })}
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

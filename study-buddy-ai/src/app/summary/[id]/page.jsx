@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import Markdown from 'react-markdown';
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from 'react-markdown'
+import MarkdownPreview from "@uiw/react-markdown-preview";
 import Navbar from '@/components/Navbar';
 import toast, { Toaster } from "react-hot-toast";
 
@@ -69,8 +72,31 @@ const page = () => {
     <div className="flex justify-center items-center min-h-screen flex-col">
       <Toaster position="top-center" reverseOrder={false} />
       <Navbar />
-      <div className="font-sans bg-gray-100 p-4 rounded-lg shadow min-w-[350px] w-[70%]  mt-24">
-        {!loading ? <Markdown>{summary}</Markdown> : "Refining..."}
+      <div className="font-sans bg-gray-100 p-1 rounded-lg shadow min-w-[350px] w-[70%]  mt-24">
+        {/* {!loading ? (
+          <Markdown>{summary.replace(/\n/g, "<br/>")}</Markdown>
+        ) : (
+          "Refining..."
+        )} */}
+        {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown> */}
+        {
+          !loading ? (
+            <MarkdownPreview className='w-full rounded -lg'
+          source={summary}
+          style={{ padding: 16, backgroundColor: 'white', color: 'black'
+           }}
+          rehypeRewrite={(node, index, parent) => {
+            if (
+              node.tagName === "a" &&
+              parent &&
+              /^h(1|2|3|4|5|6)/.test(parent.tagName)
+            ) {
+              parent.children = parent.children.slice(1);
+            }
+          }}
+        />
+          ) : ("Refining...")
+        }
       </div>
       <div className="min-w-[350px] w-[70%] mt-4 p-4 bg-gray-300 rounded-md">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-2">
@@ -184,8 +210,8 @@ const page = () => {
           <input
             type="text"
             name="customPrompt"
-            className='w-full bg-white rounded-md p-[4px] text-black'
-            placeholder='Enter custom prompt here'
+            className="w-full bg-white rounded-md p-[4px] text-black"
+            placeholder="Enter custom prompt here"
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
           />

@@ -3,7 +3,7 @@ import { summarizeText } from "@/lib/gemini";
 import { extractTextFromBuffer } from "@/lib/extractTextFromBuffer";
 // import { getDataFromPDF } from "@/helpers/getdataformpdf";
 import { cookies } from "next/headers";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import Summary from "@/models/summaryModel";
 import { connect } from "@/dbConfig/dbConfig";
 connect();
@@ -28,16 +28,13 @@ export async function POST(req) {
 
     let text;
     if (fileType === "pdf") {
-      const response = await fetch(
-        "https://pdfbuffer2text-api.onrender.com/convert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/pdf",
-          },
-          body: buffer, // send raw binary buffer
-        }
-      );
+      const response = await fetch("https://pdfbuffer2text-api.onrender.com/convert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/pdf",
+        },
+        body: buffer, // send raw binary buffer
+      });
       const data = await response.json();
       text = data.text;
     } else {
@@ -51,11 +48,11 @@ export async function POST(req) {
       userId: decodedToken.id,
       extractedText: text,
       summary: summary,
-      title: fileName
+      title: fileName,
     });
 
     const savedSummary = await summaryOnDB.save();
-    console.log(savedSummary)
+    console.log(savedSummary);
 
     return NextResponse.json({ success: true, summary, id: summaryOnDB._id });
   } catch (error) {
@@ -67,12 +64,14 @@ export async function POST(req) {
   }
 }
 
-
 export async function DELETE(req) {
   try {
-    const {summaryId} = await req.json();
-    if(!summaryId){
-      return NextResponse.json({success: false, error: "No summary Id sent!"});
+    const { summaryId } = await req.json();
+    if (!summaryId) {
+      return NextResponse.json({
+        success: false,
+        error: "No summary Id sent!",
+      });
     }
 
     const summaryInDB = await Summary.findByIdAndDelete(summaryId);
@@ -82,8 +81,14 @@ export async function DELETE(req) {
         { status: 404 }
       );
     }
-    return NextResponse.json({success: true, message: "Summary deleted successfully"});
+    return NextResponse.json({
+      success: true,
+      message: "Summary deleted successfully",
+    });
   } catch (error) {
-    return NextResponse.json({success: false, error: "Internal server error"});
+    return NextResponse.json({
+      success: false,
+      error: "Internal server error",
+    });
   }
 }

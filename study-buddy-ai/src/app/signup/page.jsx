@@ -22,6 +22,7 @@ const page = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -102,16 +103,26 @@ const page = () => {
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={user.password}
-                  placeholder="password"
-                  onChange={(e) =>
-                    setUser({ ...user, password: e.target.value })
-                  }
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={user.password}
+                    placeholder="password"
+                    onChange={(e) =>
+                      setUser({ ...user, password: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className=" absolute bottom-2 right-2 text-sm text-gray-600"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
             </div>
           </form>

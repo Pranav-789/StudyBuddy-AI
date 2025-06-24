@@ -26,6 +26,7 @@ const page = () => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false)
 
   const onLogIn = async () => {
     try {
@@ -94,16 +95,26 @@ const page = () => {
                     Forgot your password?
                   </Link>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={user.password}
-                  placeholder="password"
-                  onChange={(e) =>
-                    setUser({ ...user, password: e.target.value })
-                  }
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={user.password}
+                    placeholder="password"
+                    onChange={(e) =>
+                      setUser({ ...user, password: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className=" absolute bottom-2 right-2 text-sm text-gray-600"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
             </div>
           </form>

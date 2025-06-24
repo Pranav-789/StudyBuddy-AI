@@ -120,3 +120,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-webkit-input-decoration-container {
+  display: none;
+}
